@@ -48,27 +48,28 @@ client = InfluxDBClient(host, port, user, password, dbname)
 try:
     while True:
         humidity, temperature = Adafruit_DHT.read_retry(sensor, gpio_pin)
-        iso = time.ctime()
-        # if we want to measure in fahrenheit convert the temp from c
-        if fahrenheit:
-            temperature = temperature * 9/5.0 + 32
-        print ("Temperature: "+str(temperature))
-        print ("Humidity: "+str(humidity)+"%")
-        data = [
-            {
-                "measurement": measurement,
-                "tags": {
-                    "location": location,
-                },
-                "time": iso,
-                "fields": {
-                    "temperature": temperature,
-                    "humidity": humidity
+        if humidity is not None and temperature is not None:
+            iso = time.ctime()
+            # if we want to measure in fahrenheit convert the temp from c
+            if fahrenheit:
+                temperature = temperature * 9/5.0 + 32
+            print ("Temperature: "+str(temperature))
+            print ("Humidity: "+str(humidity)+"%")
+            data = [
+                {
+                    "measurement": measurement,
+                    "tags": {
+                        "location": location,
+                    },
+                    "time": iso,
+                    "fields": {
+                        "temperature": temperature,
+                        "humidity": humidity
+                    }
                 }
-            }
-        ]
-        client.write_points(data)
-        time.sleep(interval)
+            ]
+            client.write_points(data)
+            time.sleep(interval)
 
 except KeyboardInterrupt:
     pass
