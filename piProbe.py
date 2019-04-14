@@ -32,6 +32,8 @@ if config['gpio']['sensor'].upper() == 'DHT22':
     sensor = Adafruit_DHT.DHT22
 elif config['gpio']['sensor'].upper() == 'DHT11':
     sensor = Adafruit_DHT.DHT11
+elif config['gpio']['sensor'].upper() == 'AM2302':
+    sensor = Adafruit_DHT.AM2302
 else:
     print("The sensor entered is not supported.")
     exit(2)
