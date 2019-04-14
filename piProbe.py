@@ -72,8 +72,8 @@ try:
                     },
                     "time": iso,
                     "fields": {
-                        "value_c": temperature,
-                        "value_f": temperature * 9/5.0 + 32
+                        "value_c": float(temperature),
+                        "value_f": float(temperature * 9/5.0 + 32)
                     }
                 },
                 {
@@ -84,7 +84,7 @@ try:
                     },
                     "time": iso,
                     "fields": {
-                        "value": humidity
+                        "value": float(humidity)
                     }
                 }
             ]
