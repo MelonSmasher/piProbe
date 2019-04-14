@@ -7,6 +7,7 @@ Simple python script that sends temperature and humidity data gather on a Raspbe
 ```bash
 cd /opt;
 git clone https://github.com/MelonSmasher/piProbe.git;
+cd piProbe/;
 pip install -r requirements.txt;
 cp config.example.json config.json;
 mkdir /etc/piProbe;
