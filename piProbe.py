@@ -1,7 +1,5 @@
-import time
 import sys
 import os
-import datetime
 import socket
 import json
 import Adafruit_DHT
