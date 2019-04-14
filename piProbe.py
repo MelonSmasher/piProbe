@@ -2,6 +2,7 @@ import time
 import sys
 import os
 import datetime
+import socket
 import json
 import Adafruit_DHT
 from influxdb import InfluxDBClient
@@ -24,8 +25,9 @@ user = config['influxdb']['user']
 password = config['influxdb']['password']
 dbname = config['influxdb']['dbname']
 interval = config['influxdb']['interval']
-measurement = config['influxdb']['measurement']
 location = config['influxdb']['location']
+ssl = config['influxdb']['ssl']
+ssl_verify = config['influxdb']['ssl_verify']
 
 # set the adafruit sensor
 if config['gpio']['sensor'].upper() == 'DHT22':
@@ -43,33 +45,53 @@ gpio_pin = config['gpio']['pin']
 fahrenheit = config['gpio']['fahrenheit']
 
 # Make a new influx client
-client = InfluxDBClient(host, port, user, password, dbname)
+client = InfluxDBClient(
+    host=host,
+    port=port,
+    username=user,
+    password=password,
+    database=dbname,
+    ssl=ssl,
+    verify_ssl=ssl_verify
+)
+hostname = socket.gethostname()
 
 try:
     while True:
         humidity, temperature = Adafruit_DHT.read_retry(sensor, gpio_pin)
         if humidity is not None and temperature is not None:
+
             iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.localtime())
-            # if we want to measure in fahrenheit convert the temp from c
-            if fahrenheit:
-                temperature = temperature * 9/5.0 + 32
-            print ("Temperature: "+str(temperature))
-            print ("Humidity: "+str(humidity)+"%")
-            print (iso)
+
             data = [
                 {
-                    "measurement": measurement,
+                    "measurement": "temperature",
                     "tags": {
+                        "host": hostname,
                         "location": location,
                     },
                     "time": iso,
                     "fields": {
-                        "temperature": temperature,
-                        "humidity": humidity
+                        "value_c": temperature,
+                        "value_f": temperature * 9/5.0 + 32
+                    }
+                },
+                {
+                    "measurement": "humidity",
+                    "tags": {
+                        "host": hostname,
+                        "location": location,
+                    },
+                    "time": iso,
+                    "fields": {
+                        "value": humidity
                     }
                 }
             ]
-            client.write_points(data, time_precision='s')
+            if client.write_points(data, time_precision='s'):
+                print("yup")
+            else:
+                print("nope")
             time.sleep(interval)
 
 except KeyboardInterrupt:

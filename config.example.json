@@ -6,7 +6,8 @@
         "password": "",
         "dbname": "",
         "interval": 60,
-        "measurement": "piProbe",
+        "ssl": false,
+        "ssl_verify": false,
         "location": "ServerRoom"
     },
     "gpio": {
