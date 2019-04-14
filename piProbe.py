@@ -2,6 +2,7 @@ import sys
 import os
 import socket
 import json
+import time
 import Adafruit_DHT
 from influxdb import InfluxDBClient
 
