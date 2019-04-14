@@ -55,6 +55,7 @@ try:
                 temperature = temperature * 9/5.0 + 32
             print ("Temperature: "+str(temperature))
             print ("Humidity: "+str(humidity)+"%")
+            print (iso)
             data = [
                 {
                     "measurement": measurement,
