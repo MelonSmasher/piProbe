@@ -1,6 +1,6 @@
 # piProbe
 
-Simple python script that sends temperature and humidity data gather on a RaspberryPi with a DHT22 sensor to InfluxDB.
+Simple python script that sends temperature and humidity data gathered on a RaspberryPi with a DHT11/DHT22/AM2302 sensor to InfluxDB.
 
 ## Setup
 
