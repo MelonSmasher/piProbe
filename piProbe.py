@@ -40,6 +40,7 @@ else:
 
 # set the pinout
 gpio_pin = config['gpio']['pin']
+fahrenheit = config['gpio']['fahrenheit']
 
 # Make a new influx client
 client = InfluxDBClient(host, port, user, password, dbname)
@@ -48,6 +49,9 @@ try:
     while True:
         humidity, temperature = Adafruit_DHT.read_retry(sensor, gpio_pin)
         iso = time.ctime()
+        # if we want to measure in fahrenheit convert the temp from c
+        if fahrenheit:
+            temperature = temperature * 9/5.0 + 32
         print ("Temperature: "+str(temperature))
         print ("Humidity: "+str(humidity)+"%")
         data = [

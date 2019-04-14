@@ -11,6 +11,7 @@
     },
     "gpio": {
         "pin": 4,
-        "sensor": "DHT22"
+        "sensor": "DHT22",
+        "fahrenheit": false
     }
 }
