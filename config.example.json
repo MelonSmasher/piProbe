@@ -4,7 +4,7 @@
         "port": 8086,
         "user": "",
         "password": "",
-        "dbname": "",
+        "dbname": "probes",
         "interval": 10,
         "ssl": false,
         "ssl_verify": false,
@@ -12,6 +12,6 @@
     },
     "gpio": {
         "pin": 4,
-        "sensor": "DHT22"
+        "sensor": "AM2302"
     }
 }
