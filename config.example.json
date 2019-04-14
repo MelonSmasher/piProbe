@@ -1,0 +1,16 @@
+{
+    "influxdb": {
+        "host": "",
+        "port": 8086,
+        "user": "",
+        "password": "",
+        "dbname": "",
+        "interval": 60,
+        "measurement": "piProbe",
+        "location": "ServerRoom"
+    },
+    "gpio": {
+        "pin": 4,
+        "sensor": "DHT22"
+    }
+}
