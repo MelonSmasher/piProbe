@@ -61,8 +61,6 @@ try:
         humidity, temperature = Adafruit_DHT.read_retry(sensor, gpio_pin)
         if humidity is not None and temperature is not None:
 
-            iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.localtime())
-
             data = [
                 {
                     "measurement": "temperature",
@@ -70,10 +68,9 @@ try:
                         "host": hostname,
                         "location": location,
                     },
-                    "time": iso,
                     "fields": {
-                        "value_c": int(temperature),
-                        "value_f": int(temperature * 9/5.0 + 32)
+                        "value_c": float(temperature),
+                        "value_f": float(temperature * 9/5.0 + 32)
                     }
                 },
                 {
@@ -82,9 +79,8 @@ try:
                         "host": hostname,
                         "location": location,
                     },
-                    "time": iso,
                     "fields": {
-                        "value": int(humidity)
+                        "value": float(humidity)
                     }
                 }
             ]
