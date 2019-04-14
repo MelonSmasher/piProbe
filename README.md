@@ -28,3 +28,9 @@ systemctl enable piProbe.service;
 service piProbe start;
 ```
 
+## Grafana
+
+I've supplied an example Grafana dashboard in the Grafana folder. You can import the JSON file.
+
+![Screen Shot Grafana](/screens/screen-1.png)
+

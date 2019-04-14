@@ -46,11 +46,14 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": null,
-  "iteration": 1555273715022,
+  "iteration": 1555273715025,
   "links": [],
   "panels": [
     {
-      "aliasColors": {},
+      "aliasColors": {
+        "Humidity %": "blue",
+        "Temperature˚ F": "red"
+      },
       "bars": false,
       "dashLength": 10,
       "dashes": false,
@@ -64,13 +67,14 @@
       },
       "id": 2,
       "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
+        "alignAsTable": true,
+        "avg": true,
+        "current": true,
+        "max": true,
+        "min": true,
         "show": true,
         "total": false,
-        "values": false
+        "values": true
       },
       "lines": true,
       "linewidth": 1,
@@ -78,7 +82,7 @@
       "nullPointMode": "null",
       "percentage": false,
       "pointradius": 2,
-      "points": false,
+      "points": true,
       "renderer": "flot",
       "repeat": "location",
       "repeatDirection": "v",
@@ -88,7 +92,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "alias": "Humidity",
+          "alias": "Humidity %",
           "groupBy": [
             {
               "params": [
@@ -131,7 +135,7 @@
           ]
         },
         {
-          "alias": "Temperature F",
+          "alias": "Temperature˚ F",
           "groupBy": [
             {
               "params": [
@@ -207,7 +211,7 @@
           "logBase": 1,
           "max": null,
           "min": null,
-          "show": true
+          "show": false
         }
       ],
       "yaxis": {
@@ -216,6 +220,7 @@
       }
     }
   ],
+  "refresh": "10s",
   "schemaVersion": 18,
   "style": "dark",
   "tags": [
@@ -251,7 +256,7 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -282,5 +287,5 @@
   "timezone": "",
   "title": "piProbe",
   "uid": "X45XAJgZz",
-  "version": 3
+  "version": 4
 }
