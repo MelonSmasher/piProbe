@@ -49,7 +49,7 @@ try:
     while True:
         humidity, temperature = Adafruit_DHT.read_retry(sensor, gpio_pin)
         if humidity is not None and temperature is not None:
-            iso = time.ctime()
+            iso = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.localtime())
             # if we want to measure in fahrenheit convert the temp from c
             if fahrenheit:
                 temperature = temperature * 9/5.0 + 32
@@ -69,7 +69,7 @@ try:
                     }
                 }
             ]
-            client.write_points(data)
+            client.write_points(data, time_precision='s')
             time.sleep(interval)
 
 except KeyboardInterrupt:
