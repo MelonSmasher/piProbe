@@ -1,0 +1,14 @@
+[Unit]
+Description=piProbe temperature and humidity monitor
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+ExecStart=/usr/bin/env python /opt/piProbe/piProbe.py
+
+[Install]
+WantedBy=multi-user.target
