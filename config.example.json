@@ -5,7 +5,7 @@
         "user": "",
         "password": "",
         "dbname": "",
-        "interval": 60,
+        "interval": 10,
         "ssl": false,
         "ssl_verify": false,
         "location_tag": "ServerRoom"
