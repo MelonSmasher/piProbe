@@ -42,7 +42,6 @@ else:
 
 # set the pinout
 gpio_pin = config['gpio']['pin']
-fahrenheit = config['gpio']['fahrenheit']
 
 # Make a new influx client
 client = InfluxDBClient(
@@ -60,7 +59,6 @@ try:
     while True:
         humidity, temperature = Adafruit_DHT.read_retry(sensor, gpio_pin)
         if humidity is not None and temperature is not None:
-
             data = [
                 {
                     "measurement": "temperature",
@@ -84,10 +82,8 @@ try:
                     }
                 }
             ]
-            if client.write_points(data, time_precision='s'):
-                print("yup")
-            else:
-                print("nope")
+
+            client.write_points(data, time_precision='s')
             time.sleep(interval)
 
 except KeyboardInterrupt:

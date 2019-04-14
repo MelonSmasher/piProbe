@@ -8,11 +8,10 @@
         "interval": 60,
         "ssl": false,
         "ssl_verify": false,
-        "location": "ServerRoom"
+        "location_tag": "ServerRoom"
     },
     "gpio": {
         "pin": 4,
-        "sensor": "DHT22",
-        "fahrenheit": false
+        "sensor": "DHT22"
     }
 }
