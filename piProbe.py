@@ -28,9 +28,9 @@ measurement = config['influxdb']['measurement']
 location = config['influxdb']['location']
 
 # set the adafruit sensor
-if config['gpio']['sensor'] == 'DHT22':
+if config['gpio']['sensor'].upper() == 'DHT22':
     sensor = Adafruit_DHT.DHT22
-elif config['gpio']['sensor'] == 'DHT11':
+elif config['gpio']['sensor'].upper() == 'DHT11':
     sensor = Adafruit_DHT.DHT11
 else:
     print("The sensor entered is not supported.")
