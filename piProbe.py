@@ -46,6 +46,8 @@ try:
     while True:
         humidity, temperature = Adafruit_DHT.read_retry(sensor, gpio_pin)
         iso = time.ctime()
+        print ("Temperature: "+temperature)
+        print ("Humidity: "+humidity+"%")
         data = [
             {
                 "measurement": measurement,
