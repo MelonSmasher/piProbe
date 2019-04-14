@@ -32,5 +32,4 @@ service piProbe start;
 
 I've supplied an example Grafana dashboard in the Grafana folder. You can import the JSON file.
 
-![Screen Shot Grafana](/screens/screen-1.png)
-
+![Screen Shot Grafana](/screen/screen-1.png)
