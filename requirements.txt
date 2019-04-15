@@ -1,2 +1,2 @@
-Adafruit_Python_DHT
-influxdb
+Adafruit_Python_DHT==1.4.0
+influxdb==5.2.2

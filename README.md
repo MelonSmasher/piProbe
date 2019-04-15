@@ -8,6 +8,8 @@ Simple python script that sends temperature and humidity data gathered on a Rasp
 cd /opt;
 git clone https://github.com/MelonSmasher/piProbe.git;
 cd piProbe/;
+# The first run of pip will fail, run it twice.
+pip install -r requirements.txt;
 pip install -r requirements.txt;
 cp config.example.json config.json;
 mkdir /etc/piProbe;
