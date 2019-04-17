@@ -58,32 +58,33 @@ try:
     while True:
         humidity, temperature = Adafruit_DHT.read_retry(sensor, gpio_pin)
         if humidity is not None and temperature is not None:
-            data = [
-                {
-                    "measurement": "temperature",
-                    "tags": {
-                        "host": hostname,
-                        "location": location,
+            if humidity <= 100:
+                data = [
+                    {
+                        "measurement": "temperature",
+                        "tags": {
+                            "host": hostname,
+                            "location": location,
+                        },
+                        "fields": {
+                            "value_c": float(temperature),
+                            "value_f": float(temperature * 9/5.0 + 32)
+                        }
                     },
-                    "fields": {
-                        "value_c": float(temperature),
-                        "value_f": float(temperature * 9/5.0 + 32)
+                    {
+                        "measurement": "humidity",
+                        "tags": {
+                            "host": hostname,
+                            "location": location,
+                        },
+                        "fields": {
+                            "value": float(humidity)
+                        }
                     }
-                },
-                {
-                    "measurement": "humidity",
-                    "tags": {
-                        "host": hostname,
-                        "location": location,
-                    },
-                    "fields": {
-                        "value": float(humidity)
-                    }
-                }
-            ]
+                ]
 
-            client.write_points(data, time_precision='s')
-            time.sleep(interval)
+                client.write_points(data, time_precision='s')
+                time.sleep(interval)
 
 except KeyboardInterrupt:
     pass
