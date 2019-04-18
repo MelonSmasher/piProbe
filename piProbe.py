@@ -3,8 +3,17 @@ import os
 import socket
 import json
 import time
-import Adafruit_DHT
+import subprocess
 from influxdb import InfluxDBClient
+
+def install(package):
+    subprocess.call([sys.executable, "-m", "pip", "install", package])
+
+try:
+    install('Adafruit_Python_DHT==1.4.0')
+    import Adafruit_DHT
+except:
+    raise ValueError('Failed to import and install Adafruit.')
 
 # Pull the configuratin from env vars or the config file
 def getConfig():
