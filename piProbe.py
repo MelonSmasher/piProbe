@@ -36,49 +36,32 @@ def getConfig():
         print("Could not find configuration file.")
         exit(1)
 
-# Set our vars on each iteration to load changes on the fly
-hostname = socket.gethostname()
-# get the config
-config = getConfig()
-# Store config in local vars
-host = config['influxdb']['host']
-port = config['influxdb']['port']
-user = config['influxdb']['user']
-password = config['influxdb']['password']
-dbname = config['influxdb']['dbname']
-interval = config['influxdb']['interval']
-location = config['influxdb']['location']
-ssl = config['influxdb']['ssl']
-ssl_verify = config['influxdb']['ssl_verify']
-# set the pinout
-gpio_pin = config['gpio']['pin']
-# set the adafruit sensor
-if config['gpio']['sensor'].upper() == 'DHT22':
-    sensor = Adafruit_DHT.DHT22
-elif config['gpio']['sensor'].upper() == 'DHT11':
-    sensor = Adafruit_DHT.DHT11
-elif config['gpio']['sensor'].upper() == 'AM2302':
-    sensor = Adafruit_DHT.AM2302
-else:
-    print("The sensor entered is not supported.")
-    exit(2)
-
-# Make a new influx client
-client = InfluxDBClient(
-    host=host,
-    port=port,
-    username=user,
-    password=password,
-    database=dbname,
-    ssl=ssl,
-    verify_ssl=ssl_verify
-)
-
-
 try:
     while True:
+        # get the config
+        config = getConfig()
+        # set the adafruit sensor
+        if config['gpio']['sensor'].upper() == 'DHT22':
+            sensor = Adafruit_DHT.DHT22
+        elif config['gpio']['sensor'].upper() == 'DHT11':
+            sensor = Adafruit_DHT.DHT11
+        elif config['gpio']['sensor'].upper() == 'AM2302':
+            sensor = Adafruit_DHT.AM2302
+        else:
+            print("The sensor entered is not supported.")
+            exit(2)
+        # Make a new influx client
+        client = InfluxDBClient(
+            host=config['influxdb']['host'],
+            port=int(config['influxdb']['port']),
+            username=config['influxdb']['user'],
+            password=config['influxdb']['password'],
+            database=config['influxdb']['dbname'],
+            ssl=bool(config['influxdb']['ssl']),
+            verify_ssl=bool(config['influxdb']['ssl_verify'])
+        )
         # Poll the probe
-        humidity, temperature = Adafruit_DHT.read_retry(sensor, gpio_pin)
+        humidity, temperature = Adafruit_DHT.read_retry(sensor, int(config['gpio']['pin']))
         # Don't accept null values, if they're null we don't sleep and we poll the probe again
         if humidity is not None and temperature is not None:
             # Filter stupid humidity readings, if the reading is high don't sleep and poll the probe again
@@ -88,8 +71,8 @@ try:
                     {
                         "measurement": "temperature",
                         "tags": {
-                            "host": hostname,
-                            "location": location,
+                            "host": socket.gethostname(),
+                            "location": config['influxdb']['location'],
                         },
                         "fields": {
                             "value_c": float(temperature),
@@ -99,8 +82,8 @@ try:
                     {
                         "measurement": "humidity",
                         "tags": {
-                            "host": hostname,
-                            "location": location,
+                            "host": socket.gethostname(),
+                            "location": config['influxdb']['location'],
                         },
                         "fields": {
                             "value": float(humidity)
@@ -110,7 +93,7 @@ try:
                 # Write the data to influx
                 client.write_points(data, time_precision='s')
                 # wait it out
-                time.sleep(interval)
+                time.sleep(int(config['influxdb']['interval']))
 
 except KeyboardInterrupt:
     pass
