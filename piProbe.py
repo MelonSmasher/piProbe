@@ -106,8 +106,6 @@ try:
             ]
             # Write the data to influx
             client.write_points(data, time_precision='s')
-            # Destroy the client
-            client.close()
             # wait it out
             time.sleep(interval)
 
