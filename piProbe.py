@@ -53,15 +53,16 @@ def getConfig():
         print("Please supply an INFLUXDB DB value.")
         exit(1)
 
-    if not probes.get(c['gpio']['sensor'], False):
-        print("Please supply a valid GPIO SENSOR value (DHT11/DHT22/AM2302). Value Supplied: " + str(c['gpio']['sensor']))
-        exit(1)
-
     if c['influxdb']['location_tag'] is None:
         print("Please supply an INFLUXDB LOCATION TAG value.")
         exit(1)
 
-    return c
+    if (c['gpio']['sensor'] == 'DHT11') or (c['gpio']['sensor'] == 'DHT22') or (c['gpio']['sensor'] == 'AM2302'):
+        return c
+    else:
+        print("Please supply a valid GPIO SENSOR value (DHT11/DHT22/AM2302).")
+        exit(1)
+
 
 # The main program loop
 
