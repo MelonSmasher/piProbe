@@ -35,3 +35,17 @@ service piProbe start;
 I've supplied an example Grafana dashboard in the Grafana folder. You can import the JSON file.
 
 ![Screen Shot Grafana](/screen/screen-1.png)
+
+## Balena Setup
+
+* Create a new Balena application.
+  * Select Raspberry Pi 3 as the device type for the application.
+    * Create an image to flash on the SD card from within that application.
+* Flash the image to your SD card with balenaEtcher.
+  * Re-insert the SD card after the image has been flashed and open `config.txt` (located on resin-boot) with a text editor.
+    * Add the following line to the file `dtoverlay=w1-gpio`
+      * Then save the file and eject the card.
+* Power on the pi with your SD card in the Pi.
+* Clone this repo to your workstation.
+* From within the local repo directory run: `balena push <app-name>` the app name is the name of the application from the first step.
+* Profit
