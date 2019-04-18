@@ -46,15 +46,19 @@ def getConfig():
         exit(1)
 
     if c['influxdb']['host'] is None:
-        print("Please supply a INFLUXDB HOST value.")
+        print("Please supply an INFLUXDB HOST value.")
         exit(1)
 
     if c['influxdb']['dbname'] is None:
-        print("Please supply a INFLUXDB DB value.")
+        print("Please supply an INFLUXDB DB value.")
         exit(1)
 
     if not probes.get(c['gpio']['sensor'], False):
         print("Please supply a valid GPIO SENSOR value (DHT11/DHT22/AM2302).")
+        exit(1)
+
+    if c['influxdb']['location_tag'] is None:
+        print("Please supply an INFLUXDB LOCATION TAG value.")
         exit(1)
 
     return c
