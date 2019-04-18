@@ -54,7 +54,7 @@ def getConfig():
         exit(1)
 
     if not probes.get(c['gpio']['sensor'], False):
-        print("Please supply a valid GPIO SENSOR value (DHT11/DHT22/AM2302).")
+        print("Please supply a valid GPIO SENSOR value (DHT11/DHT22/AM2302). Value Supplied: " + str(c['gpio']['sensor']))
         exit(1)
 
     if c['influxdb']['location_tag'] is None:
