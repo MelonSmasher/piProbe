@@ -1,0 +1,7 @@
+*.md
+docker-compose.yml
+config.example.json
+config.json
+piProbe.service
+.git
+.gitignore

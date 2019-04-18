@@ -7,15 +7,9 @@ import subprocess
 from influxdb import InfluxDBClient
 import Adafruit_DHT
 
-# Pull the configuratin from env vars or the config file
-
 
 def getConfig():
-    probes = {
-        1: "DHT11",
-        2: "DHT22",
-        3: "AM2302"
-    }
+    # Pull the configuratin from env vars or the config file
 
     if os.environ.get('AM_I_IN_A_DOCKER_CONTAINER', False):
         c = {
@@ -64,10 +58,9 @@ def getConfig():
         exit(1)
 
 
-# The main program loop
-
-
 def mainLoop():
+    # The main program loop
+
     # device name
     hostName = os.environ.get(
         'BALENA_DEVICE_NAME_AT_INIT', socket.gethostname())
