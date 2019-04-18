@@ -1,5 +1,7 @@
 FROM balenalib/raspberrypi3-python
 
+WORKDIR /usr/src/app
+
 COPY piProbe.py piProbe.py
 
 COPY requirements.txt requirements.txt
