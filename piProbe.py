@@ -11,33 +11,53 @@ import Adafruit_DHT
 
 
 def getConfig():
+    probes = {
+        1: "DHT11",
+        2: "DHT22",
+        3: "AM2302"
+    }
+
     if os.environ.get('AM_I_IN_A_DOCKER_CONTAINER', False):
-        return {
+        c = {
             "influxdb": {
-                "host": os.environ.get('INFLUXDB_HOST', "127.0.0.1"),
+                "host": os.environ.get('INFLUXDB_HOST', None),
                 "port": int(os.environ.get('INFLUXDB_PORT', 8086)),
                 "user": os.environ.get('INFLUXDB_USER', ""),
                 "password": os.environ.get('INFLUXDB_PASSWORD', ""),
-                "dbname": os.environ.get('INFLUXDB_DB', "pi-probes"),
+                "dbname": os.environ.get('INFLUXDB_DB', None),
                 "interval": int(os.environ.get('INFLUXDB_INTERVAL', 10)),
                 "ssl": os.environ.get('INFLUXDB_SSL', False),
                 "ssl_verify": os.environ.get('INFLUXDB_SSL_VERIFY', False),
-                "location_tag": os.environ.get('INFLUXDB_LOCATION_TAG', "Winterfell")
+                "location_tag": os.environ.get('INFLUXDB_LOCATION_TAG', None)
             },
             "gpio": {
                 "pin": int(os.environ.get('GPIO_PIN', 4)),
-                "sensor": os.environ.get('GPIO_SENSOR', "AM2302")
+                "sensor": str(os.environ.get('GPIO_SENSOR', "")).upper()
             }
         }
     elif os.path.isfile('/etc/piProbe/config.json'):
         with open('/etc/piProbe/config.json') as json_file:
-            return json.load(json_file)
+            c = json.load(json_file)
     elif os.path.isfile('./config.json'):
         with open('./config.json') as json_file:
-            return json.load(json_file)
+            c = json.load(json_file)
     else:
         print("Could not find configuration file.")
         exit(1)
+
+    if c['influxdb']['host'] is None:
+        print("Please supply a INFLUXDB HOST value.")
+        exit(1)
+
+    if c['influxdb']['dbname'] is None:
+        print("Please supply a INFLUXDB DB value.")
+        exit(1)
+
+    if not probes.get(c['gpio']['sensor'], False):
+        print("Please supply a valid GPIO SENSOR value (DHT11/DHT22/AM2302).")
+        exit(1)
+
+    return c
 
 # The main program loop
 
