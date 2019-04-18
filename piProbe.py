@@ -94,6 +94,9 @@ try:
                 client.write_points(data, time_precision='s')
                 # wait it out
                 time.sleep(int(config['influxdb']['interval']))
+                # Destory the client
+                client.close()
+                client = None
 
 except KeyboardInterrupt:
     pass
