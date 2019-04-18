@@ -45,6 +45,9 @@ I've supplied an example Grafana dashboard in the Grafana folder. You can import
   * Re-insert the SD card after the image has been flashed and open `config.txt` (located on resin-boot) with a text editor.
     * Add the following line to the file `dtoverlay=w1-gpio`
       * Then save the file and eject the card.
+* Power on the pi with your SD card in the Pi.
+* Clone this repo to your workstation.
+* From within the local repo directory run: `balena push <app-name>` the app name is the name of the application from the first step.
 * Fill out the following service variables within your application.
   * piProbe - INFLUXDB_HOST - the ip/hostname of your influxdb server.
   * piProbe - INFLUXDB_PORT - the port influx db is listening on.
@@ -57,7 +60,4 @@ I've supplied an example Grafana dashboard in the Grafana folder. You can import
   * piProbe - INFLUXDB_LOCATION_TAG - where is this probe? `living room`, `the moon`, `Winterfel` Fill this out so you know where the probe is.
   * piProbe - GPIO_PIN - the GPIO 1wire pin, defaults to 4.
   * piProbe - GPIO_SENSOR - The sensor model, should be one of the following: `DHT11`, `DHT22`, `AM2302`
-* Power on the pi with your SD card in the Pi.
-* Clone this repo to your workstation.
-* From within the local repo directory run: `balena push <app-name>` the app name is the name of the application from the first step.
 * Profit
