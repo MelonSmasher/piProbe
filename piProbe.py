@@ -51,44 +51,29 @@ def getConfig():
         print("Please supply an INFLUXDB LOCATION TAG value.")
         exit(1)
 
-    if (c['gpio']['sensor'] == 'DHT11') or (c['gpio']['sensor'] == 'DHT22') or (c['gpio']['sensor'] == 'AM2302'):
-        return c
+    # set the adafruit sensor
+    if c['gpio']['sensor'] == 'DHT22':
+        c['gpio']['sensor'] = Adafruit_DHT.DHT22
+    elif c['gpio']['sensor'] == 'DHT11':
+        c['gpio']['sensor'] = Adafruit_DHT.DHT11
+    elif c['gpio']['sensor'] == 'AM2302':
+        c['gpio']['sensor'] = Adafruit_DHT.AM2302
     else:
         print("Please supply a valid GPIO SENSOR value (DHT11/DHT22/AM2302).")
         exit(1)
 
-
-def mainLoop():
-    # The main program loop
-
-    # device name
-    hostName = os.environ.get(
+    # set the devicename for tags influx
+    c['devicename'] = os.environ.get(
         'BALENA_DEVICE_NAME_AT_INIT', socket.gethostname())
-    # get the config
-    config = getConfig()
-    # set the adafruit sensor
-    if config['gpio']['sensor'].upper() == 'DHT22':
-        sensor = Adafruit_DHT.DHT22
-    elif config['gpio']['sensor'].upper() == 'DHT11':
-        sensor = Adafruit_DHT.DHT11
-    elif config['gpio']['sensor'].upper() == 'AM2302':
-        sensor = Adafruit_DHT.AM2302
-    else:
-        print("The sensor entered is not supported.")
-        exit(2)
-    # Make a new influx client
-    client = InfluxDBClient(
-        host=config['influxdb']['host'],
-        port=int(config['influxdb']['port']),
-        username=config['influxdb']['user'],
-        password=config['influxdb']['password'],
-        database=config['influxdb']['dbname'],
-        ssl=bool(config['influxdb']['ssl']),
-        verify_ssl=bool(config['influxdb']['ssl_verify'])
-    )
+
+    return c
+
+
+def mainLoop(config, client):
+    # The main program loop
     # Poll the probe
     humidity, temperature = Adafruit_DHT.read_retry(
-        sensor, int(config['gpio']['pin']))
+        config['gpio']['sensor'], int(config['gpio']['pin']))
     # Don't accept null values, if they're null we don't sleep and we poll the probe again
     if humidity is not None and temperature is not None:
         # Filter stupid humidity readings, if the reading is high don't sleep and poll the probe again
@@ -98,7 +83,7 @@ def mainLoop():
                 {
                     "measurement": "temperature",
                     "tags": {
-                        "host": hostName,
+                        "host": config['devicename'],
                         "location": config['influxdb']['location_tag'],
                     },
                     "fields": {
@@ -109,7 +94,7 @@ def mainLoop():
                 {
                     "measurement": "humidity",
                     "tags": {
-                        "host": hostName,
+                        "host": config['devicename'],
                         "location": config['influxdb']['location_tag'],
                     },
                     "fields": {
@@ -121,15 +106,24 @@ def mainLoop():
             client.write_points(data, time_precision='s')
             # wait it out
             time.sleep(int(config['influxdb']['interval']))
-            # Destory the client
-            client.close()
-            client = None
 
 
 # Run it!
 try:
+    # get the config
+    config = getConfig()
+    # Make a new influx client
+    client = InfluxDBClient(
+        host=config['influxdb']['host'],
+        port=int(config['influxdb']['port']),
+        username=config['influxdb']['user'],
+        password=config['influxdb']['password'],
+        database=config['influxdb']['dbname'],
+        ssl=bool(config['influxdb']['ssl']),
+        verify_ssl=bool(config['influxdb']['ssl_verify'])
+    )
     while True:
         # Run the main loop
-        mainLoop()
+        mainLoop(config, client)
 except KeyboardInterrupt:
     pass
