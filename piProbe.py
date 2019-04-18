@@ -5,17 +5,11 @@ import json
 import time
 import subprocess
 from influxdb import InfluxDBClient
-
-def install(package):
-    subprocess.call([sys.executable, "-m", "pip", "install", package])
-
-try:
-    install('Adafruit_Python_DHT==1.4.0')
-    import Adafruit_DHT
-except:
-    raise ValueError('Failed to import and install Adafruit.')
+import Adafruit_DHT
 
 # Pull the configuratin from env vars or the config file
+
+
 def getConfig():
     if os.environ.get('AM_I_IN_A_DOCKER_CONTAINER', False):
         return {
@@ -46,7 +40,12 @@ def getConfig():
         exit(1)
 
 # The main program loop
+
+
 def mainLoop():
+    # device name
+    hostName = os.environ.get(
+        'BALENA_DEVICE_NAME_AT_INIT', socket.gethostname())
     # get the config
     config = getConfig()
     # set the adafruit sensor
@@ -70,7 +69,8 @@ def mainLoop():
         verify_ssl=bool(config['influxdb']['ssl_verify'])
     )
     # Poll the probe
-    humidity, temperature = Adafruit_DHT.read_retry(sensor, int(config['gpio']['pin']))
+    humidity, temperature = Adafruit_DHT.read_retry(
+        sensor, int(config['gpio']['pin']))
     # Don't accept null values, if they're null we don't sleep and we poll the probe again
     if humidity is not None and temperature is not None:
         # Filter stupid humidity readings, if the reading is high don't sleep and poll the probe again
@@ -80,8 +80,8 @@ def mainLoop():
                 {
                     "measurement": "temperature",
                     "tags": {
-                        "host": socket.gethostname(),
-                        "location": config['influxdb']['location'],
+                        "host": hostName,
+                        "location": config['influxdb']['location_tag'],
                     },
                     "fields": {
                         "value_c": float(temperature),
@@ -91,8 +91,8 @@ def mainLoop():
                 {
                     "measurement": "humidity",
                     "tags": {
-                        "host": socket.gethostname(),
-                        "location": config['influxdb']['location'],
+                        "host": hostName,
+                        "location": config['influxdb']['location_tag'],
                     },
                     "fields": {
                         "value": float(humidity)
@@ -106,6 +106,7 @@ def mainLoop():
             # Destory the client
             client.close()
             client = None
+
 
 # Run it!
 try:
