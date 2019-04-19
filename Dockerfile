@@ -1,16 +1,34 @@
-FROM balenalib/raspberrypi3-python:3-build
+###
+# Build image
+###
+FROM balenalib/raspberrypi3-alpine-python:3-latest as build
 
-WORKDIR /usr/src/app
+ENV LIBRARY_PATH=/lib:/usr/lib
+ENV ADAFRUIT_DHT_PY_VERSION=1.4.0
+ENV INFLUXDB_PY_VERSION=5.2.2
+ENV CX_FREEZE_PY_VERSION=6.0b1
+
+WORKDIR /usr/src/build
 
 COPY piProbe.py piProbe.py
 
-COPY requirements.txt requirements.txt
+RUN apk add --no-cache build-base python3 python3-dev py3-openssl
+RUN python3 -m pip install --no-cache-dir --trusted-host pypi.python.org cx_Freeze==${CX_FREEZE_PY_VERSION}
+RUN python3 -m pip install --no-cache-dir --trusted-host pypi.python.org influxdb==${INFLUXDB_PY_VERSION}
+RUN python3 -m pip install --no-cache-dir --trusted-host pypi.python.org Adafruit_DHT==${ADAFRUIT_DHT_PY_VERSION} --install-option="--force-pi2"
+RUN cxfreeze piProbe.py --target-dir dist --include-modules=multiprocessing,os,sys,influxdb,Adafruit_DHT,requests,idna.idnadata,urllib3
 
-RUN apt-get update \
-  && apt-get upgrade --yes \
-  && apt-get install build-essential python-dev python-openssl python-pip -y \
-  && pip3 install --no-cache-dir --trusted-host pypi.python.org -r requirements.txt
+###
+# Deployed image
+###
+FROM arm32v7/alpine:3.9
 
-ENV AM_I_IN_A_DOCKER_CONTAINER Yes
+ENV AM_I_IN_A_DOCKER_CONTAINER=Yes
+ENV LIBRARY_PATH=/lib:/usr/lib
 
-CMD modprobe w1-gpio && modprobe w1-therm modprobe i2c-dev && python3 piProbe.py
+WORKDIR /usr/src/app
+
+# Copy precompiled binary
+COPY --from=build /usr/src/build/dist/ ./
+
+CMD modprobe w1-gpio && modprobe w1-therm && modprobe i2c-dev && ./piProbe
