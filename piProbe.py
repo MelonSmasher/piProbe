@@ -1,12 +1,12 @@
+from __future__ import print_function
+from influxdb import InfluxDBClient
 import sys
 import os
 import socket
 import json
 import time
 import subprocess
-from influxdb import InfluxDBClient
 import Adafruit_DHT
-from __future__ import print_function
 
 
 def getConfig():
