@@ -1,7 +1,7 @@
 ###
 # Build image
 ###
-FROM balenalib/raspberrypi3-alpine-python:3-3.9-build as build
+FROM balenalib/raspberrypi3-alpine-python:3-3.8-build as build
 
 ENV LIBRARY_PATH=/lib:/usr/lib
 ENV ADAFRUIT_DHT_PY_VERSION=1.4.0
@@ -21,7 +21,7 @@ RUN apk add --no-cache build-base musl-utils python3 python3-dev py3-openssl && 
 ###
 # Deployed image
 ###
-FROM arm32v7/alpine:3.9
+FROM arm32v7/alpine:3.8
 
 ENV AM_I_IN_A_DOCKER_CONTAINER=Yes
 ENV LIBRARY_PATH=/lib:/usr/lib
