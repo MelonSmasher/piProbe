@@ -6,7 +6,8 @@ FROM balenalib/raspberrypi3-alpine-python:3-3.8-build as build
 ENV LIBRARY_PATH=/lib:/usr/lib
 ENV ADAFRUIT_DHT_PY_VERSION=1.4.0
 ENV INFLUXDB_PY_VERSION=5.2.2
-ENV CX_FREEZE_PY_VERSION=6.0b1
+#ENV CX_FREEZE_PY_VERSION=6.0b1
+ENV CX_FREEZE_PY_VERSION=5.0.2
 
 WORKDIR /usr/src/build
 
