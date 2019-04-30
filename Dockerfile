@@ -1,13 +1,12 @@
 ###
 # Build image
 ###
-FROM balenalib/raspberrypi3-alpine-python:3-3.8-build as build
+FROM balenalib/raspberrypi3-alpine-python:3-3.9-build as build
 
 ENV LIBRARY_PATH=/lib:/usr/lib
 ENV ADAFRUIT_DHT_PY_VERSION=1.4.0
 ENV INFLUXDB_PY_VERSION=5.2.2
-#ENV CX_FREEZE_PY_VERSION=6.0b1
-ENV CX_FREEZE_PY_VERSION=5.0.2
+ENV CX_FREEZE_PY_VERSION=6.0b1
 
 WORKDIR /usr/src/build
 
@@ -15,6 +14,7 @@ COPY piProbe.py piProbe.py
 
 RUN apk update && \
     apk add --no-cache build-base musl-utils python3 python3-dev py3-openssl && \
+    ln -s /lib/libc.musl-x86_64.so.1 ldd && \
     python3 -m pip install --no-cache-dir --trusted-host pypi.python.org cx_Freeze==${CX_FREEZE_PY_VERSION} && \
     python3 -m pip install --no-cache-dir --trusted-host pypi.python.org influxdb==${INFLUXDB_PY_VERSION} && \
     python3 -m pip install --no-cache-dir --trusted-host pypi.python.org Adafruit_DHT==${ADAFRUIT_DHT_PY_VERSION} --install-option="--force-pi2" && \
@@ -23,7 +23,7 @@ RUN apk update && \
 ###
 # Deployed image
 ###
-FROM arm32v7/alpine:3.8
+FROM arm32v7/alpine:3.9
 
 ENV AM_I_IN_A_DOCKER_CONTAINER=Yes
 ENV LIBRARY_PATH=/lib:/usr/lib
