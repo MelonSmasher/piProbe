@@ -12,7 +12,7 @@ WORKDIR /usr/src/build
 
 COPY piProbe.py piProbe.py
 
-RUN apk add --no-cache build-base python3 python3-dev py3-openssl && \
+RUN apk add --no-cache build-base musl-utils python3 python3-dev py3-openssl && \
     python3 -m pip install --no-cache-dir --trusted-host pypi.python.org cx_Freeze==${CX_FREEZE_PY_VERSION} && \
     python3 -m pip install --no-cache-dir --trusted-host pypi.python.org influxdb==${INFLUXDB_PY_VERSION} && \
     python3 -m pip install --no-cache-dir --trusted-host pypi.python.org Adafruit_DHT==${ADAFRUIT_DHT_PY_VERSION} --install-option="--force-pi2" && \
