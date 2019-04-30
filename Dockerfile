@@ -14,7 +14,8 @@ COPY piProbe.py piProbe.py
 
 RUN apk update && \
     apk add --no-cache build-base musl-utils python3 python3-dev py3-openssl && \
-    ln -s /lib/libc.musl-x86_64.so.1 ldd && \
+    ls -la /lib/libc.musl-* && \
+    cp /lib/libc.musl-x86_64.so.1 ldd && \
     ln -s /lib /lib64 && \
     python3 -m pip install --no-cache-dir --trusted-host pypi.python.org cx_Freeze==${CX_FREEZE_PY_VERSION} && \
     python3 -m pip install --no-cache-dir --trusted-host pypi.python.org influxdb==${INFLUXDB_PY_VERSION} && \
