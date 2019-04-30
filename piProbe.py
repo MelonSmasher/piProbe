@@ -6,6 +6,7 @@ import time
 import subprocess
 from influxdb import InfluxDBClient
 import Adafruit_DHT
+from __future__ import print_function
 
 
 def getConfig():
@@ -13,6 +14,7 @@ def getConfig():
 
     if os.environ.get('AM_I_IN_A_DOCKER_CONTAINER', False):
         c = {
+            "debug": os.environ.get('DEBUG', False),
             "influxdb": {
                 "host": os.environ.get('INFLUXDB_HOST', None),
                 "port": int(os.environ.get('INFLUXDB_PORT', 8086)),
@@ -69,15 +71,35 @@ def getConfig():
     return c
 
 
+def debugOut(valueC, valueF, valueH):
+    print('Debug Values:')
+    print('C: '+str(valueC))
+    print('F: '+str(valueF))
+    print('H: '+str(valueH)+'%')
+    print('')
+
+
 def mainLoop(config, client):
     # The main program loop
     # Poll the probe
     humidity, temperature = Adafruit_DHT.read_retry(
         config['gpio']['sensor'], int(config['gpio']['pin']))
+
     # Don't accept null values, if they're null we don't sleep and we poll the probe again
     if humidity is not None and temperature is not None:
+
+        # Store our values
+        valueC = float(temperature)
+        valueF = float(temperature * 9/5.0 + 32)
+        valueH = float(humidity)
+
+        # If debug is enabled output the values to stdout
+        if config['debug']:
+            debugOut(valueC, valueF, valueH)
+
         # Filter stupid humidity readings, if the reading is high don't sleep and poll the probe again
         if humidity <= 100:
+
             # Format the measurements for influx
             data = [
                 {
@@ -87,8 +109,8 @@ def mainLoop(config, client):
                         "location": config['influxdb']['location_tag'],
                     },
                     "fields": {
-                        "value_c": float(temperature),
-                        "value_f": float(temperature * 9/5.0 + 32)
+                        "value_c": valueC,
+                        "value_f": valueF
                     }
                 },
                 {
@@ -98,7 +120,7 @@ def mainLoop(config, client):
                         "location": config['influxdb']['location_tag'],
                     },
                     "fields": {
-                        "value": float(humidity)
+                        "value": valueH
                     }
                 }
             ]
@@ -106,6 +128,9 @@ def mainLoop(config, client):
             client.write_points(data, time_precision='s')
             # wait it out
             time.sleep(int(config['influxdb']['interval']))
+    else:
+        if config['debug']:
+            print('No values found for either temp, humidity, or both. Trying again...')
 
 
 # Run it!
