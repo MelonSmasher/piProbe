@@ -1,10 +1,10 @@
-from influxdb import InfluxDBClient
 import sys
 import os
 import socket
 import json
 import time
 import subprocess
+from influxdb import InfluxDBClient
 import Adafruit_DHT
 
 

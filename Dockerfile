@@ -1,7 +1,7 @@
 ###
 # Build image
 ###
-FROM balenalib/raspberrypi3-alpine-python:3-latest as build
+FROM balenalib/raspberrypi3-alpine-python:3-3.9-build as build
 
 ENV LIBRARY_PATH=/lib:/usr/lib
 ENV ADAFRUIT_DHT_PY_VERSION=1.4.0
